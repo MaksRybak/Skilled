@@ -1,0 +1,413 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище SkladModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="TabGrupa">
+          <Key>
+            <PropertyRef Name="TabGrupaId" />
+          </Key>
+          <Property Name="TabGrupaId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Група" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="TabSklad">
+          <Key>
+            <PropertyRef Name="TabSkladId" />
+          </Key>
+          <Property Name="TabSkladId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="N_nn" Type="int" />
+          <Property Name="TabGroupRef" Type="int" />
+          <Property Name="Назва" Type="nvarchar" MaxLength="255" />
+          <Property Name="TabVyrobnykRef" Type="int" />
+          <Property Name="Ціна" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="Кількість" Type="int" />
+          <Property Name="Постачальник" Type="nvarchar" MaxLength="255" />
+          <Property Name="TabValutaRef" Type="int" />
+          <Property Name="TabSkladRef" Type="int" />
+        </EntityType>
+        <EntityType Name="TabSklad_2">
+          <Key>
+            <PropertyRef Name="TabSkladId" />
+          </Key>
+          <Property Name="TabSkladId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Склад" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="TabValuta">
+          <Key>
+            <PropertyRef Name="TabValutaId" />
+          </Key>
+          <Property Name="TabValutaId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Валюта" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="TabVyrobnyk">
+          <Key>
+            <PropertyRef Name="TabVyrobnykId" />
+          </Key>
+          <Property Name="TabVyrobnykId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Виробник" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <Association Name="FK_TabSklad_TabGrupa">
+          <End Role="TabGrupa" Type="Self.TabGrupa" Multiplicity="0..1" />
+          <End Role="TabSklad" Type="Self.TabSklad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TabGrupa">
+              <PropertyRef Name="TabGrupaId" />
+            </Principal>
+            <Dependent Role="TabSklad">
+              <PropertyRef Name="TabGroupRef" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TabSklad_TabSklad_2">
+          <End Role="TabSklad_2" Type="Self.TabSklad_2" Multiplicity="0..1" />
+          <End Role="TabSklad" Type="Self.TabSklad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TabSklad_2">
+              <PropertyRef Name="TabSkladId" />
+            </Principal>
+            <Dependent Role="TabSklad">
+              <PropertyRef Name="TabSkladRef" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TabSklad_TabValuta">
+          <End Role="TabValuta" Type="Self.TabValuta" Multiplicity="0..1" />
+          <End Role="TabSklad" Type="Self.TabSklad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TabValuta">
+              <PropertyRef Name="TabValutaId" />
+            </Principal>
+            <Dependent Role="TabSklad">
+              <PropertyRef Name="TabValutaRef" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TabSklad_TabVyrobnyk">
+          <End Role="TabVyrobnyk" Type="Self.TabVyrobnyk" Multiplicity="0..1" />
+          <End Role="TabSklad" Type="Self.TabSklad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TabVyrobnyk">
+              <PropertyRef Name="TabVyrobnykId" />
+            </Principal>
+            <Dependent Role="TabSklad">
+              <PropertyRef Name="TabVyrobnykRef" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="spClearSklad" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="spSkladTabRead" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="spZapSklad" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="N_pp" Type="int" Mode="In" />
+          <Parameter Name="Grupa" Type="nvarchar" Mode="In" />
+          <Parameter Name="Nazva" Type="nvarchar" Mode="In" />
+          <Parameter Name="Vyrobnyk" Type="nvarchar" Mode="In" />
+          <Parameter Name="Cina" Type="decimal" Mode="In" />
+          <Parameter Name="Kilkist" Type="int" Mode="In" />
+          <Parameter Name="Postach" Type="nvarchar" Mode="In" />
+          <Parameter Name="Valuta" Type="nvarchar" Mode="In" />
+          <Parameter Name="Sklad" Type="nvarchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="Хранилище SkladModelContainer">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TabGrupa" EntityType="Self.TabGrupa" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TabSklad" EntityType="Self.TabSklad" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TabSklad_2" EntityType="Self.TabSklad_2" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TabValuta" EntityType="Self.TabValuta" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TabVyrobnyk" EntityType="Self.TabVyrobnyk" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_TabSklad_TabGrupa" Association="Self.FK_TabSklad_TabGrupa">
+            <End Role="TabGrupa" EntitySet="TabGrupa" />
+            <End Role="TabSklad" EntitySet="TabSklad" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TabSklad_TabSklad_2" Association="Self.FK_TabSklad_TabSklad_2">
+            <End Role="TabSklad_2" EntitySet="TabSklad_2" />
+            <End Role="TabSklad" EntitySet="TabSklad" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TabSklad_TabValuta" Association="Self.FK_TabSklad_TabValuta">
+            <End Role="TabValuta" EntitySet="TabValuta" />
+            <End Role="TabSklad" EntitySet="TabSklad" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TabSklad_TabVyrobnyk" Association="Self.FK_TabSklad_TabVyrobnyk">
+            <End Role="TabVyrobnyk" EntitySet="TabVyrobnyk" />
+            <End Role="TabSklad" EntitySet="TabSklad" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SkladModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="TabGrupa">
+          <Key>
+            <PropertyRef Name="TabGrupaId" />
+          </Key>
+          <Property Name="TabGrupaId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Група" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="TabSklad" Relationship="Self.FK_TabSklad_TabGrupa" FromRole="TabGrupa" ToRole="TabSklad" />
+        </EntityType>
+        <EntityType Name="TabSklad">
+          <Key>
+            <PropertyRef Name="TabSkladId" />
+          </Key>
+          <Property Name="TabSkladId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="N_nn" Type="Int32" />
+          <Property Name="TabGroupRef" Type="Int32" />
+          <Property Name="Назва" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TabVyrobnykRef" Type="Int32" />
+          <Property Name="Ціна" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="Кількість" Type="Int32" />
+          <Property Name="Постачальник" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TabValutaRef" Type="Int32" />
+          <Property Name="TabSkladRef" Type="Int32" />
+          <NavigationProperty Name="TabGrupa" Relationship="Self.FK_TabSklad_TabGrupa" FromRole="TabSklad" ToRole="TabGrupa" />
+          <NavigationProperty Name="TabSklad_2" Relationship="Self.FK_TabSklad_TabSklad_2" FromRole="TabSklad" ToRole="TabSklad_2" />
+          <NavigationProperty Name="TabValuta" Relationship="Self.FK_TabSklad_TabValuta" FromRole="TabSklad" ToRole="TabValuta" />
+          <NavigationProperty Name="TabVyrobnyk" Relationship="Self.FK_TabSklad_TabVyrobnyk" FromRole="TabSklad" ToRole="TabVyrobnyk" />
+        </EntityType>
+        <EntityType Name="TabSklad_2">
+          <Key>
+            <PropertyRef Name="TabSkladId" />
+          </Key>
+          <Property Name="TabSkladId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Склад" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="TabSklad" Relationship="Self.FK_TabSklad_TabSklad_2" FromRole="TabSklad_2" ToRole="TabSklad" />
+        </EntityType>
+        <EntityType Name="TabValuta">
+          <Key>
+            <PropertyRef Name="TabValutaId" />
+          </Key>
+          <Property Name="TabValutaId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Валюта" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="TabSklad" Relationship="Self.FK_TabSklad_TabValuta" FromRole="TabValuta" ToRole="TabSklad" />
+        </EntityType>
+        <EntityType Name="TabVyrobnyk">
+          <Key>
+            <PropertyRef Name="TabVyrobnykId" />
+          </Key>
+          <Property Name="TabVyrobnykId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Виробник" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="TabSklad" Relationship="Self.FK_TabSklad_TabVyrobnyk" FromRole="TabVyrobnyk" ToRole="TabSklad" />
+        </EntityType>
+        <Association Name="FK_TabSklad_TabGrupa">
+          <End Role="TabGrupa" Type="Self.TabGrupa" Multiplicity="0..1" />
+          <End Role="TabSklad" Type="Self.TabSklad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TabGrupa">
+              <PropertyRef Name="TabGrupaId" />
+            </Principal>
+            <Dependent Role="TabSklad">
+              <PropertyRef Name="TabGroupRef" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TabSklad_TabSklad_2">
+          <End Role="TabSklad_2" Type="Self.TabSklad_2" Multiplicity="0..1" />
+          <End Role="TabSklad" Type="Self.TabSklad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TabSklad_2">
+              <PropertyRef Name="TabSkladId" />
+            </Principal>
+            <Dependent Role="TabSklad">
+              <PropertyRef Name="TabSkladRef" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TabSklad_TabValuta">
+          <End Role="TabValuta" Type="Self.TabValuta" Multiplicity="0..1" />
+          <End Role="TabSklad" Type="Self.TabSklad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TabValuta">
+              <PropertyRef Name="TabValutaId" />
+            </Principal>
+            <Dependent Role="TabSklad">
+              <PropertyRef Name="TabValutaRef" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TabSklad_TabVyrobnyk">
+          <End Role="TabVyrobnyk" Type="Self.TabVyrobnyk" Multiplicity="0..1" />
+          <End Role="TabSklad" Type="Self.TabSklad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TabVyrobnyk">
+              <PropertyRef Name="TabVyrobnykId" />
+            </Principal>
+            <Dependent Role="TabSklad">
+              <PropertyRef Name="TabVyrobnykRef" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SkladEntities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <EntitySet Name="TabGrupa" EntityType="Self.TabGrupa" />
+          <EntitySet Name="TabSklad" EntityType="Self.TabSklad" />
+          <EntitySet Name="TabSklad_2" EntityType="Self.TabSklad_2" />
+          <EntitySet Name="TabValuta" EntityType="Self.TabValuta" />
+          <EntitySet Name="TabVyrobnyk" EntityType="Self.TabVyrobnyk" />
+          <AssociationSet Name="FK_TabSklad_TabGrupa" Association="Self.FK_TabSklad_TabGrupa">
+            <End Role="TabGrupa" EntitySet="TabGrupa" />
+            <End Role="TabSklad" EntitySet="TabSklad" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TabSklad_TabSklad_2" Association="Self.FK_TabSklad_TabSklad_2">
+            <End Role="TabSklad_2" EntitySet="TabSklad_2" />
+            <End Role="TabSklad" EntitySet="TabSklad" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TabSklad_TabValuta" Association="Self.FK_TabSklad_TabValuta">
+            <End Role="TabValuta" EntitySet="TabValuta" />
+            <End Role="TabSklad" EntitySet="TabSklad" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TabSklad_TabVyrobnyk" Association="Self.FK_TabSklad_TabVyrobnyk">
+            <End Role="TabVyrobnyk" EntitySet="TabVyrobnyk" />
+            <End Role="TabSklad" EntitySet="TabSklad" />
+          </AssociationSet>
+          <FunctionImport Name="spClearSklad" />
+          <FunctionImport Name="spSkladTabRead" ReturnType="Collection(SkladModel.spSkladTabRead_Result)" />
+          <FunctionImport Name="spZapSklad">
+            <Parameter Name="N_pp" Mode="In" Type="Int32" />
+            <Parameter Name="Grupa" Mode="In" Type="String" />
+            <Parameter Name="Nazva" Mode="In" Type="String" />
+            <Parameter Name="Vyrobnyk" Mode="In" Type="String" />
+            <Parameter Name="Cina" Mode="In" Type="Decimal" />
+            <Parameter Name="Kilkist" Mode="In" Type="Int32" />
+            <Parameter Name="Postach" Mode="In" Type="String" />
+            <Parameter Name="Valuta" Mode="In" Type="String" />
+            <Parameter Name="Sklad" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="spSkladTabRead_Result">
+          <Property Type="Int32" Name="N_nn" Nullable="true" />
+          <Property Type="String" Name="Група" Nullable="true" MaxLength="255" />
+          <Property Type="String" Name="Назва" Nullable="true" MaxLength="255" />
+          <Property Type="String" Name="Виробник" Nullable="true" MaxLength="255" />
+          <Property Type="Decimal" Name="Ціна" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Int32" Name="Кількість" Nullable="true" />
+          <Property Type="String" Name="Постачальник" Nullable="true" MaxLength="255" />
+          <Property Type="String" Name="Валюта" Nullable="true" MaxLength="255" />
+          <Property Type="String" Name="Склад" Nullable="true" MaxLength="50" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище SkladModelContainer" CdmEntityContainer="SkladEntities1">
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="SkladModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TabGrupa">
+            <EntityTypeMapping TypeName="SkladModel.TabGrupa">
+              <MappingFragment StoreEntitySet="TabGrupa">
+                <ScalarProperty Name="TabGrupaId" ColumnName="TabGrupaId" />
+                <ScalarProperty Name="Група" ColumnName="Група" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TabSklad">
+            <EntityTypeMapping TypeName="SkladModel.TabSklad">
+              <MappingFragment StoreEntitySet="TabSklad">
+                <ScalarProperty Name="TabSkladId" ColumnName="TabSkladId" />
+                <ScalarProperty Name="N_nn" ColumnName="N_nn" />
+                <ScalarProperty Name="TabGroupRef" ColumnName="TabGroupRef" />
+                <ScalarProperty Name="Назва" ColumnName="Назва" />
+                <ScalarProperty Name="TabVyrobnykRef" ColumnName="TabVyrobnykRef" />
+                <ScalarProperty Name="Ціна" ColumnName="Ціна" />
+                <ScalarProperty Name="Кількість" ColumnName="Кількість" />
+                <ScalarProperty Name="Постачальник" ColumnName="Постачальник" />
+                <ScalarProperty Name="TabValutaRef" ColumnName="TabValutaRef" />
+                <ScalarProperty Name="TabSkladRef" ColumnName="TabSkladRef" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TabSklad_2">
+            <EntityTypeMapping TypeName="SkladModel.TabSklad_2">
+              <MappingFragment StoreEntitySet="TabSklad_2">
+                <ScalarProperty Name="TabSkladId" ColumnName="TabSkladId" />
+                <ScalarProperty Name="Склад" ColumnName="Склад" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TabValuta">
+            <EntityTypeMapping TypeName="SkladModel.TabValuta">
+              <MappingFragment StoreEntitySet="TabValuta">
+                <ScalarProperty Name="TabValutaId" ColumnName="TabValutaId" />
+                <ScalarProperty Name="Валюта" ColumnName="Валюта" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TabVyrobnyk">
+            <EntityTypeMapping TypeName="SkladModel.TabVyrobnyk">
+              <MappingFragment StoreEntitySet="TabVyrobnyk">
+                <ScalarProperty Name="TabVyrobnykId" ColumnName="TabVyrobnykId" />
+                <ScalarProperty Name="Виробник" ColumnName="Виробник" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="spClearSklad" FunctionName="Хранилище SkladModel.spClearSklad" />
+          <FunctionImportMapping FunctionImportName="spSkladTabRead" FunctionName="Хранилище SkladModel.spSkladTabRead">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SkladModel.spSkladTabRead_Result">
+                <ScalarProperty Name="N_nn" ColumnName="N_nn" />
+                <ScalarProperty Name="Група" ColumnName="Група" />
+                <ScalarProperty Name="Назва" ColumnName="Назва" />
+                <ScalarProperty Name="Виробник" ColumnName="Виробник" />
+                <ScalarProperty Name="Ціна" ColumnName="Ціна" />
+                <ScalarProperty Name="Кількість" ColumnName="Кількість" />
+                <ScalarProperty Name="Постачальник" ColumnName="Постачальник" />
+                <ScalarProperty Name="Валюта" ColumnName="Валюта" />
+                <ScalarProperty Name="Склад" ColumnName="Склад" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="spZapSklad" FunctionName="Хранилище SkladModel.spZapSklad" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
